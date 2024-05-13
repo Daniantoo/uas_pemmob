@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   //Before we show the image, after we copied the image we need to define the location in pubspec.yaml
                   Image.asset(
-                    "lib/assets/login.png",
+                    "images/login.png",
                     width: 210,
                   ),
                   const SizedBox(height: 15),
@@ -131,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: MediaQuery.of(context).size.width * .9,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: Colors.deepPurple),
+                        color: Colors.blueGrey),
                     child: TextButton(
                         onPressed: () {
                           if (formKey.currentState!.validate()) {

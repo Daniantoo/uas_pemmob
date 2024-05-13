@@ -147,7 +147,7 @@ class _SignUpState extends State<SignUp> {
                     width: MediaQuery.of(context).size.width * .9,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: Colors.deepPurple),
+                        color: Colors.blueGrey),
                     child: TextButton(
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
