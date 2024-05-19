@@ -14,15 +14,12 @@ class _SignUpState extends State<SignUp> {
   final username = TextEditingController();
   final password = TextEditingController();
   final confirmPassword = TextEditingController();
-
   final formKey = GlobalKey<FormState>();
-
   bool isVisible = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //SingleChildScrollView to have an scrol in the screen
       body: Center(
         child: SingleChildScrollView(
           child: Form(
@@ -32,22 +29,15 @@ class _SignUpState extends State<SignUp> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  //We will copy the previous textfield we designed to avoid time consuming
-
                   const ListTile(
                     title: Text(
                       "Register New Account",
-                      style:
-                      TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
                     ),
                   ),
-
-                  //As we assigned our controller to the textformfields
-
                   Container(
                     margin: EdgeInsets.all(8),
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: Colors.deepPurple.withOpacity(.2)),
@@ -55,7 +45,7 @@ class _SignUpState extends State<SignUp> {
                       controller: username,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "username is required";
+                          return "Username is required";
                         }
                         return null;
                       },
@@ -66,12 +56,9 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                   ),
-
-                  //Password field
                   Container(
                     margin: const EdgeInsets.all(8),
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: Colors.deepPurple.withOpacity(.2)),
@@ -79,7 +66,7 @@ class _SignUpState extends State<SignUp> {
                       controller: password,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "password is required";
+                          return "Password is required";
                         }
                         return null;
                       },
@@ -90,9 +77,7 @@ class _SignUpState extends State<SignUp> {
                           hintText: "Password",
                           suffixIcon: IconButton(
                               onPressed: () {
-                                //In here we will create a click to show and hide the password a toggle button
                                 setState(() {
-                                  //toggle button
                                   isVisible = !isVisible;
                                 });
                               },
@@ -101,13 +86,9 @@ class _SignUpState extends State<SignUp> {
                                   : Icons.visibility_off))),
                     ),
                   ),
-
-                  //Confirm Password field
-                  // Now we check whether password matches or not
                   Container(
                     margin: const EdgeInsets.all(8),
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: Colors.deepPurple.withOpacity(.2)),
@@ -115,7 +96,7 @@ class _SignUpState extends State<SignUp> {
                       controller: confirmPassword,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "password is required";
+                          return "Password is required";
                         } else if (password.text != confirmPassword.text) {
                           return "Passwords don't match";
                         }
@@ -125,12 +106,10 @@ class _SignUpState extends State<SignUp> {
                       decoration: InputDecoration(
                           icon: const Icon(Icons.lock),
                           border: InputBorder.none,
-                          hintText: "Password",
+                          hintText: "Confirm Password",
                           suffixIcon: IconButton(
                               onPressed: () {
-                                //In here we will create a click to show and hide the password a toggle button
                                 setState(() {
-                                  //toggle button
                                   isVisible = !isVisible;
                                 });
                               },
@@ -139,9 +118,9 @@ class _SignUpState extends State<SignUp> {
                                   : Icons.visibility_off))),
                     ),
                   ),
-
                   const SizedBox(height: 10),
-                  //Login button
+
+                  //Account Exists
                   Container(
                     height: 55,
                     width: MediaQuery.of(context).size.width * .9,
@@ -149,23 +128,28 @@ class _SignUpState extends State<SignUp> {
                         borderRadius: BorderRadius.circular(8),
                         color: Colors.blueGrey),
                     child: TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (formKey.currentState!.validate()) {
-                            //Login method will be here
-
                             final db = DatabaseHelper();
-                            db
-                                .signup(Users(
+                            bool userExists = await db.userExists(username.text);
+                            if (userExists) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Account already exists. Please log in.'),
+                                ),
+                              );
+                            } else {
+                              await db.signup(Users(
                                 usrName: username.text,
-                                usrPassword: password.text))
-                                .whenComplete(() {
-                              //After success user creation go to login screen
-                              Navigator.push(
+                                usrPassword: password.text,
+                              )).whenComplete(() {
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                      const LoginScreen()));
-                            });
+                                      builder: (context) => const LoginScreen()),
+                                );
+                              });
+                            }
                           }
                         },
                         child: const Text(
@@ -173,15 +157,12 @@ class _SignUpState extends State<SignUp> {
                           style: TextStyle(color: Colors.white),
                         )),
                   ),
-
-                  //Sign up button
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text("Already have an account?"),
                       TextButton(
                           onPressed: () {
-                            //Navigate to sign up
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(

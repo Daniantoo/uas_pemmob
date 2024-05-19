@@ -38,6 +38,12 @@ class DatabaseHelper {
     }
   }
 
+  Future<bool> userExists(String username) async {
+    final db = await initDB();
+    var res = await db.query('users', where: 'usrName = ?', whereArgs: [username]);
+    return res.isNotEmpty;
+  }
+
   //Sign up
   Future<int> signup(Users user) async {
     final Database db = await initDB();
